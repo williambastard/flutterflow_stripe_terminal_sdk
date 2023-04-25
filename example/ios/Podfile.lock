@@ -1,0 +1,29 @@
+PODS:
+  - Flutter (1.0.0)
+  - flutterflow_stripe_terminal (0.0.1):
+    - Flutter
+    - FlutterflowStripeTerminal (~> 2.7.0)
+  - FlutterflowStripeTerminal (2.7.0)
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - flutterflow_stripe_terminal (from `.symlinks/plugins/flutterflow_stripe_terminal/ios`)
+
+SPEC REPOS:
+  trunk:
+    - FlutterflowStripeTerminal
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  flutterflow_stripe_terminal:
+    :path: ".symlinks/plugins/flutterflow_stripe_terminal/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+  flutterflow_stripe_terminal: 72e66012170e64f994e33e4252762957279e1ea5
+  FlutterflowStripeTerminal: 237b759168a00c7f55b97c743cd8a4921866c46b
+
+PODFILE CHECKSUM: 7368163408c647b7eb699d0d788ba6718e18fb8d
+
+COCOAPODS: 1.11.3
