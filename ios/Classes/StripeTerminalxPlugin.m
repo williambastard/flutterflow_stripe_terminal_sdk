@@ -1,5 +1,5 @@
 #import "StripeTerminalxPlugin.h"
-#if __has_include(<stripe_terminal/stripe_terminal-Swift.h>)
+#if __has_include(<stripe_terminalx/stripe_terminalx-Swift.h>)
 #import <stripe_terminalx/stripe_terminalx-Swift.h>
 #else
 // Support project import fallback if the generated compatibility header
