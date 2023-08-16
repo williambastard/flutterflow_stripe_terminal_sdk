@@ -74,16 +74,22 @@ class StripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
 
     fun _startStripe() {
         // Pass in the current application context, your desired logging level, your token provider, and the listener you created
-        if (!Terminal.isInitialized()) {
-            Terminal.initTerminal(
-                currentActivity!!.applicationContext,
-                logLevel,
-                tokenProvider,
-                listener
-            )
-            result?.success(true)
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            String[] permissions = {Manifest.permission.ACCESS_COARSE_LOCATION};
+                
+            // REQUEST_CODE should be defined on your app level
+            ActivityCompat.requestPermissions(getActivity(), permissions, REQUEST_CODE_LOCATION);
+        } else {
+            if (!Terminal.isInitialized()) {
+                Terminal.initTerminal(
+                    currentActivity!!.applicationContext,
+                    logLevel,
+                    tokenProvider,
+                    listener
+                )
+                result?.success(true)
+            }
         }
-
     }
 
     private fun generateLog(code: String, message: String) {
@@ -97,9 +103,9 @@ class StripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
         when (call.method) {
             "init" -> {
-                if (_isPermissionAllowed(result)) {
+                //if (_isPermissionAllowed(result)) {
                     _startStripe()
-                }
+                //}
             }
             "clearReaderDisplay" -> {
                 Terminal.getInstance().clearReaderDisplay(object :Callback{
@@ -561,19 +567,21 @@ class StripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
         permissions: Array<out String>,
         grantResults: IntArray
     ): Boolean {
-        val permissionStatus = permissions.map {
-            ContextCompat.checkSelfPermission(currentActivity!!, it)
-        }
-        if (!permissionStatus.contains(PackageManager.PERMISSION_DENIED)) {
-            //_startStripe()
-            result?.success(true)
-        } else {
+        if (requestCode == REQUEST_CODE_LOCATION && grantResults.length > 0
+                && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    
             result?.error(
                 "stripeTerminal#insuffecientPermission",
                 "You have not provided enough permission for the scanner to work",
                 null
             )
+            throw new RuntimeException("Location services are required in order to " +
+                    "connect to a reader.");
         }
+        else { 
+            _startStripe()
+        }
+        
         return requestCode == REQUEST_CODE_LOCATION
     }
 
