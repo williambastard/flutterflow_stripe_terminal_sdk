@@ -1,4 +1,4 @@
-library flutterflow_stripe_terminal;
+library stripe_terminalx;
 
 import 'dart:async';
 
@@ -13,14 +13,13 @@ part 'models/payment_method.dart';
 part "models/discover_config.dart";
 part "models/collect_configuration.dart";
 
-class FlutterflowStripeTerminal {
+class StripeTerminalx {
   // Method Channel on which the package operates with the native platform.
-  static const MethodChannel _channel =
-      MethodChannel('flutterflow_stripe_terminal');
+  static const MethodChannel _channel = MethodChannel('stripe_terminalx');
   final Future<String> Function() _fetchToken;
 
-  /// Creates an internal `FlutterflowStripeTerminal` instance
-  FlutterflowStripeTerminal._internal({
+  /// Creates an internal `StripeTerminal` instance
+  StripeTerminalx._internal({
     /// A callback function that is supposed to return a
     /// terminal connection token from backend.
     required Future<String> Function() fetchToken,
@@ -38,9 +37,7 @@ class FlutterflowStripeTerminal {
         case "onReadersFound":
           List readers = call.arguments;
           _readerStreamController.add(
-            readers
-                .map<StripeReaderStruct>((e) => StripeReaderStruct.fromJson(e))
-                .toList(),
+            readers.map<StripeReader>((e) => StripeReader.fromJson(e)).toList(),
           );
           return _fetchToken();
         default:
@@ -50,17 +47,16 @@ class FlutterflowStripeTerminal {
   }
 
   /// Initializes the terminal SDK
-  static Future<FlutterflowStripeTerminal> getInstance({
+  static Future<StripeTerminalx> getInstance({
     /// A callback function that returns a Future which resolves to a connection token from your backend
     /// Check out more at https://stripe.com/docs/terminal/payments/setup-integration#connection-token
     required Future<String> Function() fetchToken,
   }) async {
-    FlutterflowStripeTerminal _flutterflowStripeTerminal =
-        FlutterflowStripeTerminal._internal(
+    StripeTerminalx _stripeTerminal = StripeTerminalx._internal(
       fetchToken: fetchToken,
     );
     await _channel.invokeMethod("init");
-    return _flutterflowStripeTerminal;
+    return _stripeTerminal;
   }
 
   /// Stream controller for the logs coming from the native platform
@@ -80,6 +76,7 @@ class FlutterflowStripeTerminal {
   Future<bool> connectToReader(
     /// Serial number of the reader to connect with
     String readerSerialNumber, {
+
     /// The id of the location on which you want to conenct this bluetooth reader with.
     ///
     /// Either you have to provide a location here or the device should already be registered to a location
@@ -103,6 +100,7 @@ class FlutterflowStripeTerminal {
   Future<bool> connectBluetoothReader(
     /// Serial number of the bluetooth reader to connect with
     String readerSerialNumber, {
+
     /// The id of the location on which you want to conenct this bluetooth reader with.
     ///
     /// Either you have to provide a location here or the device should already be registered to a location
@@ -127,6 +125,7 @@ class FlutterflowStripeTerminal {
   Future<bool> connectToInternetReader(
     /// Serial number of the internet reader to connect with
     String readerSerialNumber, {
+
     /// Weather the connection process should fail if the device is already in use
     bool failIfInUse = false,
   }) async {
@@ -183,12 +182,12 @@ class FlutterflowStripeTerminal {
   }
 
   /// Fetches the connected reader from the SDK. `null` if not connected
-  Future<StripeReaderStruct?> fetchConnectedReader() async {
+  Future<StripeReader?> fetchConnectedReader() async {
     Map? reader = await _channel.invokeMethod<Map>("fetchConnectedReader");
     if (reader == null) {
       return null;
     } else {
-      return StripeReaderStruct.fromJson(reader);
+      return StripeReader.fromJson(reader);
     }
   }
 
@@ -200,18 +199,18 @@ class FlutterflowStripeTerminal {
     return StripePaymentMethod.fromJson(cardDetail);
   }
 
-  late StreamController<List<StripeReaderStruct>> _readerStreamController;
+  late StreamController<List<StripeReader>> _readerStreamController;
 
   /// Starts scanning readers in the vicinity. This will return a list of readers.
   ///
   /// Can contain an empty array if no readers are found.
   ///
   /// [simulated] se to `true` will simulate readers which can be connected and tested.
-  Stream<List<StripeReaderStruct>> discoverReaders(
+  Stream<List<StripeReader>> discoverReaders(
     /// Configuration for the discovry process
     DiscoverConfig config,
   ) {
-    _readerStreamController = StreamController<List<StripeReaderStruct>>();
+    _readerStreamController = StreamController<List<StripeReader>>();
 
     _channel.invokeMethod("discoverReaders#start", {
       "config": config.toMap(),
@@ -235,6 +234,7 @@ class FlutterflowStripeTerminal {
   Future<StripePaymentIntent> collectPaymentMethod(
     // Client secret of the payment intent which you want to collect payment mwthod for
     String clientSecret, {
+
     /// Configruation for the collection process
     CollectConfiguration? collectConfiguration = const CollectConfiguration(
       skipTipping: true,

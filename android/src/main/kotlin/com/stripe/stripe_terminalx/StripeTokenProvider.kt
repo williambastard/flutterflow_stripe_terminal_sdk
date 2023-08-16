@@ -1,9 +1,9 @@
-package com.stripe.flutterflow_stripe_terminal
+package com.stripe.stripe_terminalx
 
 import android.app.Activity
-import com.stripe.FlutterflowStripeTerminal.external.callable.ConnectionTokenCallback
-import com.stripe.FlutterflowStripeTerminal.external.callable.ConnectionTokenProvider
-import com.stripe.FlutterflowStripeTerminal.external.models.ConnectionTokenException
+import com.stripe.stripeterminalx.external.callable.ConnectionTokenCallback
+import com.stripe.stripeterminalx.external.callable.ConnectionTokenProvider
+import com.stripe.stripeterminalx.external.models.ConnectionTokenException
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.plugin.common.MethodChannel
 

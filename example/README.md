@@ -1,6 +1,6 @@
-# flutterflow_stripe_terminal_example
+# stripe_terminalx_example
 
-Demonstrates how to use the flutterflow_stripe_terminal plugin.
+Demonstrates how to use the stripe_terminalx plugin.
 
 ## Getting Started
 

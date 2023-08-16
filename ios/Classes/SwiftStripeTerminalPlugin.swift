@@ -1,9 +1,9 @@
 import Flutter
 import UIKit
 import Foundation
-import FlutterflowStripeTerminal
+import StripeTerminalx
 
-public class SwiftFlutterflowStripeTerminalPlugin: NSObject, FlutterPlugin, DiscoveryDelegate, BluetoothReaderDelegate {
+public class SwiftStripeTerminalxPlugin: NSObject, FlutterPlugin, DiscoveryDelegate, BluetoothReaderDelegate {
     
     
     let stripeAPIClient: StripeAPIClient
@@ -12,8 +12,8 @@ public class SwiftFlutterflowStripeTerminalPlugin: NSObject, FlutterPlugin, Disc
     var readers: [Reader] = []
     
     public static func register(with registrar: FlutterPluginRegistrar) {
-        let channel = FlutterMethodChannel(name: "flutterflow_stripe_terminal", binaryMessenger: registrar.messenger())
-        let instance = SwiftFlutterflowStripeTerminalPlugin(channel: channel)
+        let channel = FlutterMethodChannel(name: "stripe_terminalx", binaryMessenger: registrar.messenger())
+        let instance = SwiftStripeTerminalxPlugin(channel: channel)
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
     
@@ -54,7 +54,7 @@ public class SwiftFlutterflowStripeTerminalPlugin: NSObject, FlutterPlugin, Disc
                 } else {
                     result(
                         FlutterError(
-                            code: "FlutterflowStripeTerminal#unableToClearDisplay",
+                            code: "stripeTerminal#unableToClearDisplay",
                             message: error!.localizedDescription,
                             details: nil
                         )
@@ -70,7 +70,7 @@ public class SwiftFlutterflowStripeTerminalPlugin: NSObject, FlutterPlugin, Disc
                 if(readerDisplay == nil) {
                     return result(
                         FlutterError(
-                            code: "FlutterflowStripeTerminal#unableToDisplay",
+                            code: "stripeTerminal#unableToDisplay",
                             message: "Invalid `readerDisplay` value provided",
                             details: nil
                         )
@@ -94,7 +94,7 @@ public class SwiftFlutterflowStripeTerminalPlugin: NSObject, FlutterPlugin, Disc
                     } else {
                         result(
                             FlutterError(
-                                code: "FlutterflowStripeTerminal#unableToDisplay",
+                                code: "stripeTerminal#unableToDisplay",
                                 message: error!.localizedDescription,
                                 details: nil
                             )
@@ -105,7 +105,7 @@ public class SwiftFlutterflowStripeTerminalPlugin: NSObject, FlutterPlugin, Disc
             } catch {
                 result(
                     FlutterError(
-                        code: "FlutterflowStripeTerminal#unableToDisplay",
+                        code: "stripeTerminal#unableToDisplay",
                         message: "Invalid `readerDisplay` value provided",
                         details: nil
                     )
@@ -118,12 +118,12 @@ public class SwiftFlutterflowStripeTerminalPlugin: NSObject, FlutterPlugin, Disc
             let simulated = configData["simulated"] as! Bool
             let locationId = configData["locationId"] as? String
             let discoveryMethodString = configData["discoveryMethod"] as! String
-            let discoveryMethod = FlutterflowStripeTerminalParser.getScanMethod(discoveryMethod: discoveryMethodString)
+            let discoveryMethod = StripeTerminalxParser.getScanMethod(discoveryMethod: discoveryMethodString)
             
             if(discoveryMethod == nil){
                 return result(
                     FlutterError(
-                        code: "FlutterflowStripeTerminal#invalidRequest",
+                        code: "stripeTerminal#invalidRequest",
                         message: "`discoveryMethod` is not provided on discoverReaders function",
                         details: nil
                     )
@@ -140,7 +140,7 @@ public class SwiftFlutterflowStripeTerminalPlugin: NSObject, FlutterPlugin, Disc
                 if let error = error {
                     result(
                         FlutterError(
-                            code: "FlutterflowStripeTerminal#unabelToDiscover",
+                            code: "stripeTerminal#unabelToDiscover",
                             message: "Unable to discover readers because \(error.localizedDescription) ",
                             details: nil
                         )
@@ -154,7 +154,7 @@ public class SwiftFlutterflowStripeTerminalPlugin: NSObject, FlutterPlugin, Disc
             if(self.discoverCancelable == nil){
                 result(
                     FlutterError(
-                        code: "FlutterflowStripeTerminal#unabelToCancelDiscover",
+                        code: "stripeTerminal#unabelToCancelDiscover",
                         message: "There is no discover action running to stop.",
                         details: nil
                     )
@@ -164,7 +164,7 @@ public class SwiftFlutterflowStripeTerminalPlugin: NSObject, FlutterPlugin, Disc
                     if let error = error {
                         result(
                             FlutterError(
-                                code: "FlutterflowStripeTerminal#unabelToCancelDiscover",
+                                code: "stripeTerminal#unabelToCancelDiscover",
                                 message: "Unable to stop the discover action because \(error.localizedDescription) ",
                                 details: nil
                             )
@@ -187,7 +187,7 @@ public class SwiftFlutterflowStripeTerminalPlugin: NSObject, FlutterPlugin, Disc
                 if(err != nil) {
                     result(
                         FlutterError(
-                            code: "FlutterflowStripeTerminal#unableToDisconnect",
+                            code: "stripeTerminal#unableToDisconnect",
                             message: "Unable to disconnect from device because \(err?.localizedDescription)",
                             details: nil
                         )
@@ -212,7 +212,7 @@ public class SwiftFlutterflowStripeTerminalPlugin: NSObject, FlutterPlugin, Disc
                 if(reader == nil) {
                     result(
                         FlutterError(
-                            code: "FlutterflowStripeTerminal#readerNotFound",
+                            code: "stripeTerminal#readerNotFound",
                             message: "Reader with provided serial number no longer exists",
                             details: nil
                         )
@@ -225,7 +225,7 @@ public class SwiftFlutterflowStripeTerminalPlugin: NSObject, FlutterPlugin, Disc
                 if(locationId == nil) {
                     result(
                         FlutterError(
-                            code: "FlutterflowStripeTerminal#locationNotProvided",
+                            code: "stripeTerminal#locationNotProvided",
                             message: "Either you have to provide the location id or device should be attached to a location",
                             details: nil
                         )
@@ -243,7 +243,7 @@ public class SwiftFlutterflowStripeTerminalPlugin: NSObject, FlutterPlugin, Disc
                     } else {
                         result(
                             FlutterError(
-                                code: "FlutterflowStripeTerminal#unableToConnect",
+                                code: "stripeTerminal#unableToConnect",
                                 message: error?.localizedDescription,
                                 details: nil
                             )
@@ -254,7 +254,7 @@ public class SwiftFlutterflowStripeTerminalPlugin: NSObject, FlutterPlugin, Disc
             } else if(Terminal.shared.connectionStatus == .connecting) {
                 result(
                     FlutterError(
-                        code: "FlutterflowStripeTerminal#deviceConnecting",
+                        code: "stripeTerminal#deviceConnecting",
                         message: "A new connection is being established with a device thus you cannot request a new connection at the moment.",
                         details: nil
                     )
@@ -262,7 +262,7 @@ public class SwiftFlutterflowStripeTerminalPlugin: NSObject, FlutterPlugin, Disc
             } else {
                 result(
                     FlutterError(
-                        code: "FlutterflowStripeTerminal#deviceAlreadyConnected",
+                        code: "stripeTerminal#deviceAlreadyConnected",
                         message: "A device with serial number \(Terminal.shared.connectedReader!.serialNumber) is already connected",
                         details: nil
                     )
@@ -283,7 +283,7 @@ public class SwiftFlutterflowStripeTerminalPlugin: NSObject, FlutterPlugin, Disc
                 if(reader == nil) {
                     result(
                         FlutterError(
-                            code: "FlutterflowStripeTerminal#readerNotFound",
+                            code: "stripeTerminal#readerNotFound",
                             message: "Reader with provided serial number no longer exists",
                             details: nil
                         )
@@ -301,7 +301,7 @@ public class SwiftFlutterflowStripeTerminalPlugin: NSObject, FlutterPlugin, Disc
                     } else {
                         result(
                             FlutterError(
-                                code: "FlutterflowStripeTerminal#unableToConnect",
+                                code: "stripeTerminal#unableToConnect",
                                 message: error?.localizedDescription,
                                 details: nil
                             )
@@ -312,7 +312,7 @@ public class SwiftFlutterflowStripeTerminalPlugin: NSObject, FlutterPlugin, Disc
             } else if(Terminal.shared.connectionStatus == .connecting) {
                 result(
                     FlutterError(
-                        code: "FlutterflowStripeTerminal#deviceConnecting",
+                        code: "stripeTerminal#deviceConnecting",
                         message: "A new connection is being established with a device thus you cannot request a new connection at the moment.",
                         details: nil
                     )
@@ -320,7 +320,7 @@ public class SwiftFlutterflowStripeTerminalPlugin: NSObject, FlutterPlugin, Disc
             } else {
                 result(
                     FlutterError(
-                        code: "FlutterflowStripeTerminal#deviceAlreadyConnected",
+                        code: "stripeTerminal#deviceAlreadyConnected",
                         message: "A device with serial number \(Terminal.shared.connectedReader!.serialNumber) is already connected",
                         details: nil
                     )
@@ -331,7 +331,7 @@ public class SwiftFlutterflowStripeTerminalPlugin: NSObject, FlutterPlugin, Disc
             if(Terminal.shared.connectedReader == nil){
                 result(
                     FlutterError(
-                        code: "FlutterflowStripeTerminal#deviceNotConnected",
+                        code: "stripeTerminal#deviceNotConnected",
                         message: "You must connect to a device before you can use it.",
                         details: nil
                     )
@@ -344,7 +344,7 @@ public class SwiftFlutterflowStripeTerminalPlugin: NSObject, FlutterPlugin, Disc
                     } else {
                         result(
                             FlutterError(
-                                code: "FlutterflowStripeTerminal#unabletToReadCardDetail",
+                                code: "stripeTerminal#unabletToReadCardDetail",
                                 message: "Device was not able to read payment method details.",
                                 details: nil
                             )
@@ -357,7 +357,7 @@ public class SwiftFlutterflowStripeTerminalPlugin: NSObject, FlutterPlugin, Disc
             if(Terminal.shared.connectedReader == nil){
                 result(
                     FlutterError(
-                        code: "FlutterflowStripeTerminal#deviceNotConnected",
+                        code: "stripeTerminal#deviceNotConnected",
                         message: "You must connect to a device before you can use it.",
                         details: nil
                     )
@@ -372,7 +372,7 @@ public class SwiftFlutterflowStripeTerminalPlugin: NSObject, FlutterPlugin, Disc
             if (paymentIntentClientSecret == nil) {
                 result(
                     FlutterError(
-                        code:   "FlutterflowStripeTerminal#invalidPaymentIntentClientSecret",
+                        code:   "stripeTerminal#invalidPaymentIntentClientSecret",
                         message:  "The payment intent client_secret seems to be invalid or missing.",
                         details:   nil
                     )
@@ -386,7 +386,7 @@ public class SwiftFlutterflowStripeTerminalPlugin: NSObject, FlutterPlugin, Disc
                 if let error = error {
                     result(
                         FlutterError(
-                            code: "FlutterflowStripeTerminal#unableToRetrivePaymentIntent",
+                            code: "stripeTerminal#unableToRetrivePaymentIntent",
                             message: "Stripe was not able to fetch the payment intent with the provided client secret. \(error.localizedDescription)",
                             details: nil
                         )
@@ -396,7 +396,7 @@ public class SwiftFlutterflowStripeTerminalPlugin: NSObject, FlutterPlugin, Disc
                         if let error = error {
                             result(
                                 FlutterError(
-                                    code: "FlutterflowStripeTerminal#unableToCollectPaymentMethod",
+                                    code: "stripeTerminal#unableToCollectPaymentMethod",
                                     message: "Stripe reader was not able to collect the payment method for the provided payment intent.  \(error.localizedDescription)",
                                     details: nil
                                 )
@@ -407,7 +407,7 @@ public class SwiftFlutterflowStripeTerminalPlugin: NSObject, FlutterPlugin, Disc
                                 if let error = error {
                                     result(
                                         FlutterError(
-                                            code: "FlutterflowStripeTerminal#unableToProcessPayment",
+                                            code: "stripeTerminal#unableToProcessPayment",
                                             message: "Stripe reader was not able to process the payment for the provided payment intent.  \(error.localizedDescription)",
                                             details: nil
                                         )
@@ -425,7 +425,7 @@ public class SwiftFlutterflowStripeTerminalPlugin: NSObject, FlutterPlugin, Disc
         default:
             result(
                 FlutterError(
-                    code: "FlutterflowStripeTerminal#unsupportedFunctionCall",
+                    code: "stripeTerminal#unsupportedFunctionCall",
                     message: "A method call of name \(call.method) is not supported by the plugin.",
                     details: nil
                 )

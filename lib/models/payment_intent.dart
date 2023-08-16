@@ -1,4 +1,4 @@
-part of flutterflow_stripe_terminal;
+part of stripe_terminalx;
 
 class StripePaymentIntent {
   final String id;

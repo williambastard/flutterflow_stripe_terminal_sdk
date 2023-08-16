@@ -1,4 +1,4 @@
 #import <Flutter/Flutter.h>
 
-@interface FlutterflowStripeTerminalPlugin : NSObject<FlutterPlugin>
+@interface StripeTerminalxPlugin : NSObject<FlutterPlugin>
 @end

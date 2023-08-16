@@ -1,4 +1,4 @@
-package com.stripe.flutterflow_stripe_terminal
+package com.stripe.stripe_terminalx
 
 import com.beust.klaxon.*
 

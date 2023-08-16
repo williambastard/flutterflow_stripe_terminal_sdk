@@ -1,4 +1,4 @@
-package com.stripe.flutterflow_stripe_terminal
+package com.stripe.stripe_terminalx
 
 import android.Manifest
 import android.app.Activity
@@ -11,12 +11,12 @@ import androidx.annotation.NonNull
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.gson.Gson
-import com.stripe.FlutterflowStripeTerminal.Terminal
-import com.stripe.FlutterflowStripeTerminal.TerminalApplicationDelegate
-import com.stripe.FlutterflowStripeTerminal.external.OnReaderTips
-import com.stripe.FlutterflowStripeTerminal.external.callable.*
-import com.stripe.FlutterflowStripeTerminal.external.models.*
-import com.stripe.FlutterflowStripeTerminal.log.LogLevel
+import com.stripe.stripeterminalx.Terminal
+import com.stripe.stripeterminalx.TerminalApplicationDelegate
+import com.stripe.stripeterminalx.external.OnReaderTips
+import com.stripe.stripeterminalx.external.callable.*
+import com.stripe.stripeterminalx.external.models.*
+import com.stripe.stripeterminalx.log.LogLevel
 import io.flutter.app.FlutterActivityEvents
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -27,8 +27,8 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry
 
-/** FlutterflowStripeTerminalPlugin */
-class FlutterflowStripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
+/** StripeTerminalPlugin */
+class StripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
     PluginRegistry.RequestPermissionsResultListener, ActivityAware, FlutterActivityEvents {
 
     private lateinit var channel: MethodChannel
@@ -67,7 +67,7 @@ class FlutterflowStripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
 
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutterflow_stripe_terminal")
+        channel = MethodChannel(flutterPluginBinding.binaryMessenger, "stripe_terminal")
         channel.setMethodCallHandler(this)
     }
 
@@ -105,7 +105,7 @@ class FlutterflowStripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
                 Terminal.getInstance().clearReaderDisplay(object :Callback{
                     override fun onFailure(e: TerminalException) {
                         return result.error(
-                            "FlutterflowStripeTerminal#unableToClearDisplay",
+                            "stripeTerminal#unableToClearDisplay",
                             e.errorMessage,
                             e.stackTraceToString()
                         )                    }
@@ -121,7 +121,7 @@ class FlutterflowStripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
 
                 val readerDisplay = ReaderDisplay.fromJson(Gson().toJson(rawReaderDisplay))
                     ?: return result.error(
-                        "FlutterflowStripeTerminal#unableToDisplay",
+                        "stripeTerminal#unableToDisplay",
                         "Invalid `readerDisplay` value provided",
                         null
                     )
@@ -145,7 +145,7 @@ class FlutterflowStripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
 
                     override fun onFailure(e: TerminalException) {
                         return result.error(
-                            "FlutterflowStripeTerminal#unableToDisplay",
+                            "stripeTerminal#unableToDisplay",
                             e.errorMessage,
                             e.stackTraceToString()
                         )
@@ -162,9 +162,9 @@ class FlutterflowStripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
                 )
 
                 val discoveryMethod =
-                    FlutterflowStripeTerminalParser.getScanMethod(discoverConfig["discoveryMethod"] as String)
+                    StripeTerminalParser.getScanMethod(discoverConfig["discoveryMethod"] as String)
                         ?: return result.error(
-                            "FlutterflowStripeTerminal#invalidRequest",
+                            "stripeTerminal#invalidRequest",
                             "`discoveryMethod` is not provided on discoverReaders function",
                             null
                         )
@@ -193,7 +193,7 @@ class FlutterflowStripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
                     }, object : Callback {
                         override fun onFailure(e: TerminalException) {
                             result.error(
-                                "FlutterflowStripeTerminal#unabelToDiscover",
+                                "stripeTerminal#unabelToDiscover",
                                 e.message,
                                 e.stackTraceToString()
                             )
@@ -207,7 +207,7 @@ class FlutterflowStripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
             "discoverReaders#stop" -> {
                 if (cancelableDiscover == null) {
                     result.error(
-                        "FlutterflowStripeTerminal#unabelToCancelDiscover",
+                        "stripeTerminal#unabelToCancelDiscover",
                         "There is no discover action running to stop.",
                         null
                     )
@@ -215,7 +215,7 @@ class FlutterflowStripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
                     cancelableDiscover?.cancel(object : Callback {
                         override fun onFailure(e: TerminalException) {
                             result.error(
-                                "FlutterflowStripeTerminal#unabelToCancelDiscover",
+                                "stripeTerminal#unabelToCancelDiscover",
                                 "Unable to stop the discover action because ${e.errorMessage}",
                                 e.stackTraceToString()
                             )
@@ -253,7 +253,7 @@ class FlutterflowStripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
 
                         if (reader == null) {
                             result.error(
-                                "FlutterflowStripeTerminal#readerNotFound",
+                                "stripeTerminal#readerNotFound",
                                 "Reader with provided serial number no longer exists",
                                 null
                             )
@@ -271,7 +271,7 @@ class FlutterflowStripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
                             object : ReaderCallback {
                                 override fun onFailure(e: TerminalException) {
                                     result.error(
-                                        "FlutterflowStripeTerminal#unableToConnect",
+                                        "stripeTerminal#unableToConnect",
                                         e.errorMessage,
                                         e.stackTraceToString()
                                     )
@@ -285,14 +285,14 @@ class FlutterflowStripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
                     }
                     ConnectionStatus.CONNECTING -> {
                         result.error(
-                            "FlutterflowStripeTerminal#deviceConnecting",
+                            "stripeTerminal#deviceConnecting",
                             "A new connection is being established with a device thus you cannot request a new connection at the moment.",
                             null
                         )
                     }
                     ConnectionStatus.CONNECTED -> {
                         result.error(
-                            "FlutterflowStripeTerminal#deviceAlreadyConnected",
+                            "stripeTerminal#deviceAlreadyConnected",
                             "A device with serial number ${Terminal.getInstance().connectedReader!!.serialNumber} is already connected",
                             null
                         )
@@ -316,7 +316,7 @@ class FlutterflowStripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
 
                         if (reader == null) {
                             result.error(
-                                "FlutterflowStripeTerminal#readerNotFound",
+                                "stripeTerminal#readerNotFound",
                                 "Reader with provided serial number no longer exists",
                                 null
                             )
@@ -331,7 +331,7 @@ class FlutterflowStripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
 
                         if (locationId == null) {
                             result.error(
-                                "FlutterflowStripeTerminal#locationNotProvided",
+                                "stripeTerminal#locationNotProvided",
                                 "Either you have to provide the location id or device should be attached to a location",
                                 null
                             )
@@ -351,7 +351,7 @@ class FlutterflowStripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
                             object : ReaderCallback {
                                 override fun onFailure(e: TerminalException) {
                                     result.error(
-                                        "FlutterflowStripeTerminal#unableToConnect",
+                                        "stripeTerminal#unableToConnect",
                                         e.errorMessage,
                                         e.stackTraceToString()
                                     )
@@ -365,14 +365,14 @@ class FlutterflowStripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
                     }
                     ConnectionStatus.CONNECTING -> {
                         result.error(
-                            "FlutterflowStripeTerminal#deviceConnecting",
+                            "stripeTerminal#deviceConnecting",
                             "A new connection is being established with a device thus you cannot request a new connection at the moment.",
                             null
                         )
                     }
                     ConnectionStatus.CONNECTED -> {
                         result.error(
-                            "FlutterflowStripeTerminal#deviceAlreadyConnected",
+                            "stripeTerminal#deviceAlreadyConnected",
                             "A device with serial number ${Terminal.getInstance().connectedReader!!.serialNumber} is already connected",
                             null
                         )
@@ -384,7 +384,7 @@ class FlutterflowStripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
 
                 if (Terminal.getInstance().connectedReader == null) {
                     result.error(
-                        "FlutterflowStripeTerminal#deviceNotConnected",
+                        "stripeTerminal#deviceNotConnected",
                         "You must connect to a device before you can use it.",
                         null
                     )
@@ -393,7 +393,7 @@ class FlutterflowStripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
                     Terminal.getInstance().readReusableCard(params, object : PaymentMethodCallback {
                         override fun onFailure(e: TerminalException) {
                             result.error(
-                                "FlutterflowStripeTerminal#unableToReadCardDetail",
+                                "stripeTerminal#unableToReadCardDetail",
                                 "Device was not able to read payment method details because ${e.errorMessage}",
                                 e.stackTraceToString()
                             )
@@ -411,7 +411,7 @@ class FlutterflowStripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
 
                 if (Terminal.getInstance().connectedReader == null) {
                     result.error(
-                        "FlutterflowStripeTerminal#deviceNotConnected",
+                        "stripeTerminal#deviceNotConnected",
                         "You must connect to a device before you can use it.",
                         null
                     )
@@ -422,7 +422,7 @@ class FlutterflowStripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
                         arguments["paymentIntentClientSecret"] as String?
                     if (paymentIntentClientSecret == null) {
                         result.error(
-                            "FlutterflowStripeTerminal#invalidPaymentIntentClientSecret",
+                            "stripeTerminal#invalidPaymentIntentClientSecret",
                             "The payment intent client_secret seems to be invalid or missing.",
                             null
                         )
@@ -439,7 +439,7 @@ class FlutterflowStripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
                             object : PaymentIntentCallback {
                                 override fun onFailure(e: TerminalException) {
                                     result.error(
-                                        "FlutterflowStripeTerminal#unableToRetrivePaymentIntent",
+                                        "stripeTerminal#unableToRetrivePaymentIntent",
                                         "Stripe was not able to fetch the payment intent with the provided client secret. ${e.errorMessage}",
                                         e.stackTraceToString()
                                     )
@@ -473,7 +473,7 @@ class FlutterflowStripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
 
                                                             override fun onFailure(e: TerminalException) {
                                                                 result.error(
-                                                                    "FlutterflowStripeTerminal#unableToProcessPayment",
+                                                                    "stripeTerminal#unableToProcessPayment",
                                                                     "Stripe reader was not able to process the payment for the provided payment intent. ${e.errorMessage}",
                                                                     e.stackTraceToString()
                                                                 )
@@ -483,7 +483,7 @@ class FlutterflowStripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
 
                                             override fun onFailure(e: TerminalException) {
                                                 result.error(
-                                                    "FlutterflowStripeTerminal#unableToCollectPaymentMethod",
+                                                    "stripeTerminal#unableToCollectPaymentMethod",
                                                     "Stripe reader was not able to collect the payment method for the provided payment intent. ${e.errorMessage}",
                                                     e.stackTraceToString()
                                                 )
@@ -501,7 +501,7 @@ class FlutterflowStripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
                     Terminal.getInstance().disconnectReader(object : Callback {
                         override fun onFailure(e: TerminalException) {
                             result.error(
-                                "FlutterflowStripeTerminal#unableToDisconnect",
+                                "stripeTerminal#unableToDisconnect",
                                 "Unable to disconnect from a reader because ${e.errorMessage}",
                                 e.stackTraceToString()
                             )
@@ -513,7 +513,7 @@ class FlutterflowStripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
                     })
                 } else {
                     result.error(
-                        "FlutterflowStripeTerminal#unableToDisconnect",
+                        "stripeTerminal#unableToDisconnect",
                         "No reader connected to disconnect from.",
                         null
                     )
@@ -542,7 +542,7 @@ class FlutterflowStripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
 
         if (cannotAskPermissions.contains(true)) {
             result.error(
-                "FlutterflowStripeTerminal#permissionDeclinedPermanenty",
+                "stripeTerminal#permissionDeclinedPermanenty",
                 "You have declined the necessary permission, please allow from settings to continue.",
                 null
             )
@@ -565,11 +565,10 @@ class FlutterflowStripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
             ContextCompat.checkSelfPermission(currentActivity!!, it)
         }
         if (!permissionStatus.contains(PackageManager.PERMISSION_DENIED)) {
-            //_startStripe()
-            result.success(true);
+            _startStripe()
         } else {
             result?.error(
-                "FlutterflowStripeTerminal#insuffecientPermission",
+                "stripeTerminal#insuffecientPermission",
                 "You have not provided enough permission for the scanner to work",
                 null
             )

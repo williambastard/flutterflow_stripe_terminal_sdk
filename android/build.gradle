@@ -1,4 +1,4 @@
-group 'com.stripe.flutterflow_stripe_terminal'
+group 'com.stripe.stripe_terminalx'
 version '1.0-SNAPSHOT'
 
 buildscript {
@@ -47,7 +47,7 @@ android {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "com.stripe:FlutterflowStripeTerminal:2.9.0"
+    implementation "com.stripe:stripeterminalx:2.9.0"
     implementation 'com.beust:klaxon:5.5'
     implementation 'com.google.code.gson:gson:2.9.0'
 }

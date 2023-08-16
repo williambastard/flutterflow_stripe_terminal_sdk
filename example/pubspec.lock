@@ -156,7 +156,7 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0"
-  flutterflow_stripe_terminal:
+  stripe_terminalx:
     dependency: "direct main"
     description:
       path: ".."

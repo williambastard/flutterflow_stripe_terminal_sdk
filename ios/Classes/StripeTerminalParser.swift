@@ -1,14 +1,14 @@
 //
-//  FlutterflowStripeTerminalParser.swift
-//  flutterflow_stripe_terminal
+//  StripeTerminalParser.swift
+//  stripe_terminalx
 //
 //  Created by Aawaz Gyawali on 08/08/2022.
 //
 
 import Foundation
-import FlutterflowStripeTerminal
+import StripeTerminalx
 
-class FlutterflowStripeTerminalParser {
+class StripeTerminalxParser {
     
     static func getScanMethod(discoveryMethod: String) -> DiscoveryMethod? {
         switch(discoveryMethod){

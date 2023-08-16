@@ -1,6 +1,6 @@
 //
 //  ReaderDisplay.swift
-//  flutterflow_stripe_terminal
+//  stripe_terminalx
 //
 //  Created by Aawaz Gyawali on 10/08/2022.
 //

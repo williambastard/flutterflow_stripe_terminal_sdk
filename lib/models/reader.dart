@@ -1,7 +1,7 @@
-part of flutterflow_stripe_terminal;
+part of stripe_terminalx;
 
 // {locationStatus: 1, batteryStatus: 0, originalJSON: {}, simulated: true, availableUpdate: false, locationId: st_simulated, serialNumber: WPC32SIMULATOR1, deviceType: 2}
-class StripeReaderStruct {
+class StripeReader {
   LocationStatus locationStatus;
   BatteryStatus batteryStatus;
   DeviceType deviceType;
@@ -10,7 +10,7 @@ class StripeReaderStruct {
   String? locationId;
   String serialNumber;
   String? label;
-  StripeReaderStruct({
+  StripeReader({
     required this.locationStatus,
     required this.batteryStatus,
     required this.deviceType,
@@ -22,8 +22,8 @@ class StripeReaderStruct {
     this.label,
   });
 
-  static StripeReaderStruct fromJson(Map json) {
-    return StripeReaderStruct(
+  static StripeReader fromJson(Map json) {
+    return StripeReader(
       locationStatus: LocationStatus.values[json["locationStatus"]],
       batteryStatus: BatteryStatus.values[json["batteryStatus"]],
       deviceType: DeviceType.values[json["deviceType"]],

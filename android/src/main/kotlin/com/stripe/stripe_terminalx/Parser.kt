@@ -1,8 +1,8 @@
-package com.stripe.flutterflow_stripe_terminal
+package com.stripe.stripe_terminalx
 
-import com.stripe.FlutterflowStripeTerminal.external.models.DiscoveryMethod
+import com.stripe.stripeterminalx.external.models.DiscoveryMethod
 
-class FlutterflowStripeTerminalParser {
+class StripeTerminalParser {
     companion object {
         fun getScanMethod(method: String): DiscoveryMethod? {
             return when (method) {
