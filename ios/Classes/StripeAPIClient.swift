@@ -1,5 +1,5 @@
 import Foundation
-import StripeTerminalx
+import StripeTerminal
 
 class StripeAPIClient: ConnectionTokenProvider {
     let methodChannel: FlutterMethodChannel
@@ -14,13 +14,13 @@ class StripeAPIClient: ConnectionTokenProvider {
                  let token = try secret as? String
                 completion(token, nil)
             } catch {
-                completion(nil, StripeTerminalxError.unableToFetchToken)
+                completion(nil, StripeTerminalError.unableToFetchToken)
             }
         }
     }
 }
 
-enum StripeTerminalxError: Error {
+enum StripeTerminalError: Error {
     // Throw when an invalid password is entered
     case unableToFetchToken
 
