@@ -565,7 +565,8 @@ class StripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
             ContextCompat.checkSelfPermission(currentActivity!!, it)
         }
         if (!permissionStatus.contains(PackageManager.PERMISSION_DENIED)) {
-            _startStripe()
+            //_startStripe()
+            result?.success(true)
         } else {
             result?.error(
                 "stripeTerminal#insuffecientPermission",
