@@ -1,3 +1,6 @@
+## 1.4.2+3
+- Added more documentation
+
 ## 1.4.2+2
 - Added more documentation
 
