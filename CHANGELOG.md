@@ -1,5 +1,5 @@
-# 1.4.2+15
-- Added more documentation
+# 1.4.2+20
+- Correction du crash pour les appareil mobile Android de version >= 12 ( APi 30 et 33)
 # 1.4.2+12
 - Added more documentation
 # 1.4.2+10

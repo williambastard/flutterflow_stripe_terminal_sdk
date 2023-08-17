@@ -3,14 +3,10 @@ package com.stripe.stripe_terminalx
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Build
-import androidx.appcompat.app.AlertDialog
-import android.content.DialogInterface
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.annotation.NonNull
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -31,6 +27,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry
 
+
 /** StripeTerminalPlugin */
 class StripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
     PluginRegistry.RequestPermissionsResultListener, ActivityAware, FlutterActivityEvents {
@@ -38,6 +35,10 @@ class StripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
     private lateinit var channel: MethodChannel
     private var currentActivity: Activity? = null
     private val REQUEST_CODE_LOCATION = 1012
+    private val REQUEST_FINE_LOCATION_PERMISSION = 100;
+    private val REQUEST_BLUETOOTH_SCAN_PERMISSION = 101;
+    private val REQUEST_BACKGROUND_LOCATION_PERMISSION = 102;
+    private val REQUEST_BLUETOOTH_CONNECT_PERMISSION= 103;
     private lateinit var tokenProvider: StripeTokenProvider
     private var cancelableDiscover: Cancelable? = null
     private var activeReaders: List<Reader> = arrayListOf()
@@ -45,14 +46,14 @@ class StripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
     private val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.BLUETOOTH,
-            Manifest.permission.BLUETOOTH_ADMIN,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.BLUETOOTH_SCAN,
             Manifest.permission.BLUETOOTH_CONNECT,
         )
     } else {
         arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.BLUETOOTH,
             Manifest.permission.BLUETOOTH_ADMIN,
         )
@@ -69,25 +70,27 @@ class StripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
         }
     }
 
-   override fun onRequestPermissionsResult(
+    override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
         grantResults: IntArray
-    ): Boolean { 
-        var allPermissionsGranted = true
-        // Vérifier si toutes les permissions ont été accordées
-        for (result in grantResults) {
-            if (result != PackageManager.PERMISSION_GRANTED) {
-                allPermissionsGranted = false
-                break
-            }
+    ): Boolean {
+        println(Build.VERSION.SDK_INT);
+        println(Build.VERSION_CODES.S);
+        val permissionStatus = permissions.map {
+            ContextCompat.checkSelfPermission(currentActivity!!, it)
         }
-
-        if (!allPermissionsGranted) {
-            return false
+        
+        if (!permissionStatus.contains(PackageManager.PERMISSION_DENIED)) {
+            _startStripe()
+        } else {/*
+            result?.error(
+                "stripeTerminal#insuffecientPermission",
+                "You have not provided enough permission for the scanner to work",
+                null
+            )*/
         }
-        _startStripe()
-        return true
+        return requestCode == REQUEST_CODE_LOCATION
     }
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "stripe_terminalx")
@@ -106,10 +109,17 @@ class StripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
         val permissionStatus = permissions.map {
             ContextCompat.checkSelfPermission(currentActivity!!, it)
         }
+        println(permissionStatus);
+        if (!permissionStatus.contains(PackageManager.PERMISSION_DENIED)) {
+            result.success(true)
+            return true
+        }
+
+
         val cannotAskPermissions = permissions.map {
             ActivityCompat.shouldShowRequestPermissionRationale(currentActivity!!, it)
         }
-        
+
         if (cannotAskPermissions.contains(true)) {
             result.error(
                 "stripeTerminal#permissionDeclinedPermanenty",
@@ -118,24 +128,16 @@ class StripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
             )
             return false
         }
-        
-        if (permissionStatus.contains(PackageManager.PERMISSION_DENIED)) {
-            ActivityCompat.requestPermissions(currentActivity!!, permissions, REQUEST_CODE_LOCATION)
-            result.error(
-                "stripeTerminal#insuffecientPermission",
-                "Le bluetooth et la localisation sont indispensables pour utiliser le TPE.",
-                null
-            )
-            this.result = result
-            return false
-        }
-        
-        result.success(true)
+
         this.result = result
-        return true
+
+        ActivityCompat.requestPermissions(currentActivity!!, permissions, REQUEST_CODE_LOCATION)
+
+        return false
     }
     
     fun _startStripe() {
+        println("error test");
         try {
             if (!Terminal.isInitialized()) {
                 Terminal.initTerminal(
@@ -147,9 +149,8 @@ class StripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
             }
         } 
         catch(e: TerminalException){
-            println(e.errorMessage);
+           // println(e.errorMessage);
         }
-       
    }
 
     @OptIn(OnReaderTips::class)
@@ -631,9 +632,16 @@ class StripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
     /*
      These functions are stub functions that are not relevent to the plugin but needs to be defined in order to get the few necessary callbacks
     */
-
     override fun onCreate(savedInstanceState: Bundle?) {
+    
         TODO("Not yet implemented")
+        /*
+        val permissionStatus = permissions.map {
+            ContextCompat.checkSelfPermission(currentActivity!!, it)
+        }
+        if (permissionStatus.contains(PackageManager.PERMISSION_DENIED)) {
+            ActivityCompat.requestPermissions(currentActivity!!, permissions, REQUEST_CODE_LOCATION)
+        }*/
     }
 
     override fun onNewIntent(intent: Intent?) {
