@@ -1,4 +1,4 @@
-#import "StripeTerminalxPlugin.h"
+#import "StripeTerminalPlugin.h"
 #if __has_include(<stripe_terminalx/stripe_terminalx-Swift.h>)
 #import <stripe_terminalx/stripe_terminalx-Swift.h>
 #else
@@ -8,8 +8,8 @@
 #import "stripe_terminalx-Swift.h"
 #endif
 
-@implementation StripeTerminalxPlugin
+@implementation StripeTerminalPlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
-  [SwiftStripeTerminalxPlugin registerWithRegistrar:registrar];
+  [SwiftStripeTerminalPlugin registerWithRegistrar:registrar];
 }
 @end

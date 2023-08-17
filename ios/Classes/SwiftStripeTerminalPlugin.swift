@@ -1,9 +1,9 @@
 import Flutter
 import UIKit
 import Foundation
-import StripeTerminalx
+import StripeTerminal
 
-public class SwiftStripeTerminalxPlugin: NSObject, FlutterPlugin, DiscoveryDelegate, BluetoothReaderDelegate {
+public class SwiftStripeTerminalPlugin: NSObject, FlutterPlugin, DiscoveryDelegate, BluetoothReaderDelegate {
     
     
     let stripeAPIClient: StripeAPIClient
@@ -13,7 +13,7 @@ public class SwiftStripeTerminalxPlugin: NSObject, FlutterPlugin, DiscoveryDeleg
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "stripe_terminalx", binaryMessenger: registrar.messenger())
-        let instance = SwiftStripeTerminalxPlugin(channel: channel)
+        let instance = SwiftStripeTerminalPlugin(channel: channel)
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
     
@@ -118,7 +118,7 @@ public class SwiftStripeTerminalxPlugin: NSObject, FlutterPlugin, DiscoveryDeleg
             let simulated = configData["simulated"] as! Bool
             let locationId = configData["locationId"] as? String
             let discoveryMethodString = configData["discoveryMethod"] as! String
-            let discoveryMethod = StripeTerminalxParser.getScanMethod(discoveryMethod: discoveryMethodString)
+            let discoveryMethod = StripeTerminalParser.getScanMethod(discoveryMethod: discoveryMethodString)
             
             if(discoveryMethod == nil){
                 return result(

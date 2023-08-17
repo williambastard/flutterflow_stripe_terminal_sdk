@@ -1,3 +1,15 @@
+# 1.4.2+14
+- Added more documentation
+# 1.4.2+12
+- Added more documentation
+# 1.4.2+10
+- Added more documentation
+# 1.4.2+9
+- Added more documentation
+# 1.4.2+8
+- Added more documentation
+## 1.4.2+7
+- Added more documentation
 ## 1.4.2+6
 - Added more documentation#
 ## 1.4.2+5
@@ -19,7 +31,7 @@
 - Added `connectToInternetReader` function and deprecated `connecttoReader` instead use `connectToBluetoothReader`
 - Fixed re listen bug
 - Implemented disconnect from reader function on android
-- Added `StripeTerminalx.getInstance` function to create a new stripe instance.
+- Added `StripeTerminal.getInstance` function to create a new stripe instance.
 - Fixed disconnecting issue
 
 ## 1.3.4

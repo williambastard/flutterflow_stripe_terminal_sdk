@@ -56,7 +56,7 @@ class _MyAppState extends State<MyApp> {
     return jsonDecode(invoice.data)["paymentIntent"]["client_secret"];
   }
 
-  late StripeTerminalx stripeTerminalx;
+  late StripeTerminal stripeTerminal;
   @override
   void initState() {
     super.initState();
@@ -64,10 +64,10 @@ class _MyAppState extends State<MyApp> {
   }
 
   _initStripe() async {
-    stripeTerminalx = await StripeTerminalx.getInstance(
+    stripeTerminal = await StripeTerminal.getInstance(
       fetchToken: getConnectionString,
     );
-    stripeTerminalx.onNativeLogs.listen(_pushLogs);
+    stripeTerminal.onNativeLogs.listen(_pushLogs);
   }
 
   bool simulated = true;
@@ -114,7 +114,7 @@ class _MyAppState extends State<MyApp> {
                   setState(() {
                     readers = [];
                   });
-                  _sub = stripeTerminalx
+                  _sub = stripeTerminal
                       .discoverReaders(
                     DiscoverConfig(
                       discoveryMethod: DiscoveryMethod.bluetooth,
@@ -141,7 +141,7 @@ class _MyAppState extends State<MyApp> {
             TextButton(
               child: const Text("Connection Status"),
               onPressed: () async {
-                stripeTerminalx.connectionStatus().then((status) {
+                stripeTerminal.connectionStatus().then((status) {
                   _showSnackbar("Connection status: ${status.toString()}");
                 });
               },
@@ -149,7 +149,7 @@ class _MyAppState extends State<MyApp> {
             TextButton(
               child: const Text("Connected Device"),
               onPressed: () async {
-                stripeTerminalx
+                stripeTerminal
                     .fetchConnectedReader()
                     .then((StripeReader? reader) {
                   _showSnackbar("Connection Device: ${reader?.toJson()}");
@@ -163,7 +163,7 @@ class _MyAppState extends State<MyApp> {
                   trailing: Text(describeEnum(e.batteryStatus)),
                   leading: Text(e.locationId ?? "No Location Id"),
                   onTap: () async {
-                    await stripeTerminalx
+                    await stripeTerminal
                         .connectToReader(
                       e.serialNumber,
                       locationId: "tml_EoMcZwfY6g8btZ",
@@ -182,7 +182,7 @@ class _MyAppState extends State<MyApp> {
             TextButton(
               child: const Text("Read Reusable Card Detail"),
               onPressed: () async {
-                stripeTerminalx
+                stripeTerminal
                     .readReusableCardDetail()
                     .then((StripePaymentMethod paymentMethod) {
                   _showSnackbar(
@@ -194,7 +194,7 @@ class _MyAppState extends State<MyApp> {
             TextButton(
               child: const Text("Set reader display"),
               onPressed: () async {
-                stripeTerminalx.setReaderDisplay(
+                stripeTerminal.setReaderDisplay(
                   ReaderDisplay(
                     type: DisplayType.cart,
                     cart: DisplayCart(
@@ -222,7 +222,7 @@ class _MyAppState extends State<MyApp> {
               child: const Text("Collect Payment Method"),
               onPressed: () async {
                 paymentIntentId = await createPaymentIntent();
-                stripeTerminalx
+                stripeTerminal
                     .collectPaymentMethod(paymentIntentId!)
                     .then((StripePaymentIntent paymentIntent) async {
                   _dio.post("/confirmPaymentIntent", data: {

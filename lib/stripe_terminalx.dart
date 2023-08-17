@@ -13,13 +13,13 @@ part 'models/payment_method.dart';
 part "models/discover_config.dart";
 part "models/collect_configuration.dart";
 
-class StripeTerminalx {
+class StripeTerminal {
   // Method Channel on which the package operates with the native platform.
   static const MethodChannel _channel = MethodChannel('stripe_terminalx');
   final Future<String> Function() _fetchToken;
 
   /// Creates an internal `StripeTerminal` instance
-  StripeTerminalx._internal({
+  StripeTerminal._internal({
     /// A callback function that is supposed to return a
     /// terminal connection token from backend.
     required Future<String> Function() fetchToken,
@@ -47,12 +47,12 @@ class StripeTerminalx {
   }
 
   /// Initializes the terminal SDK
-  static Future<StripeTerminalx> getInstance({
+  static Future<StripeTerminal> getInstance({
     /// A callback function that returns a Future which resolves to a connection token from your backend
     /// Check out more at https://stripe.com/docs/terminal/payments/setup-integration#connection-token
     required Future<String> Function() fetchToken,
   }) async {
-    StripeTerminalx _stripeTerminal = StripeTerminalx._internal(
+    StripeTerminal _stripeTerminal = StripeTerminal._internal(
       fetchToken: fetchToken,
     );
     await _channel.invokeMethod("init");

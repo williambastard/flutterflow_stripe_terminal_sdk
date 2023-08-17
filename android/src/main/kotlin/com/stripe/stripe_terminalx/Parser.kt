@@ -1,6 +1,6 @@
 package com.stripe.stripe_terminalx
 
-import com.stripe.stripeterminalx.external.models.DiscoveryMethod
+import com.stripe.stripeterminal.external.models.DiscoveryMethod
 
 class StripeTerminalParser {
     companion object {

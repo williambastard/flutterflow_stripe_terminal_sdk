@@ -1,6 +1,6 @@
 name: stripe_terminalx
 description: A flutter plugin to scan stripe readers and connect to the them and get the payment methods.
-version: 1.4.2+6
+version: 1.4.2+14
 homepage: https://github.com/awazgyawali/flutter_stripe_terminal
 
 environment:
@@ -29,9 +29,9 @@ flutter:
     platforms:
       android:
         package: com.stripe.stripe_terminalx
-        pluginClass: StripeTerminalxPlugin
+        pluginClass: StripeTerminalPlugin
       ios:
-        pluginClass: StripeTerminalxPlugin
+        pluginClass: StripeTerminalPlugin
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:

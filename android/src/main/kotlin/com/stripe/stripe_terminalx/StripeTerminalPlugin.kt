@@ -3,20 +3,24 @@ package com.stripe.stripe_terminalx
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Build
+import androidx.appcompat.app.AlertDialog
+import android.content.DialogInterface
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.annotation.NonNull
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.gson.Gson
-import com.stripe.stripeterminalx.Terminal
-import com.stripe.stripeterminalx.TerminalApplicationDelegate
-import com.stripe.stripeterminalx.external.OnReaderTips
-import com.stripe.stripeterminalx.external.callable.*
-import com.stripe.stripeterminalx.external.models.*
-import com.stripe.stripeterminalx.log.LogLevel
+import com.stripe.stripeterminal.Terminal
+import com.stripe.stripeterminal.TerminalApplicationDelegate
+import com.stripe.stripeterminal.external.OnReaderTips
+import com.stripe.stripeterminal.external.callable.*
+import com.stripe.stripeterminal.external.models.*
+import com.stripe.stripeterminal.log.LogLevel
 import io.flutter.app.FlutterActivityEvents
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -65,31 +69,29 @@ class StripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
         }
     }
 
-
-    override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        channel = MethodChannel(flutterPluginBinding.binaryMessenger, "stripe_terminal")
-        channel.setMethodCallHandler(this)
-    }
-
-
-    fun _startStripe() {
-        // Pass in the current application context, your desired logging level, your token provider, and the listener you created
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            String[] permissions = {Manifest.permission.ACCESS_COARSE_LOCATION};
-                
-            // REQUEST_CODE should be defined on your app level
-            ActivityCompat.requestPermissions(getActivity(), permissions, REQUEST_CODE_LOCATION);
-        } else {
-            if (!Terminal.isInitialized()) {
-                Terminal.initTerminal(
-                    currentActivity!!.applicationContext,
-                    logLevel,
-                    tokenProvider,
-                    listener
-                )
-                result?.success(true)
+   override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ): Boolean { 
+        var allPermissionsGranted = true
+        // Vérifier si toutes les permissions ont été accordées
+        for (result in grantResults) {
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                allPermissionsGranted = false
+                break
             }
         }
+
+        if (!allPermissionsGranted) {
+            return false
+        }
+        _startStripe()
+        return true
+    }
+    override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+        channel = MethodChannel(flutterPluginBinding.binaryMessenger, "stripe_terminalx")
+        channel.setMethodCallHandler(this)
     }
 
     private fun generateLog(code: String, message: String) {
@@ -98,14 +100,61 @@ class StripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
         log["message"] = message
         channel.invokeMethod("onNativeLog", log)
     }
+    
+    var result: Result? = null
+    private fun _isPermissionAllowed(result: Result): Boolean {
+        val permissionStatus = permissions.map {
+            ContextCompat.checkSelfPermission(currentActivity!!, it)
+        }
+        val cannotAskPermissions = permissions.map {
+            ActivityCompat.shouldShowRequestPermissionRationale(currentActivity!!, it)
+        }
+
+
+        if (!permissionStatus.contains(PackageManager.PERMISSION_DENIED)) {
+            result.success(true)
+            return true
+        }
+
+
+        if (cannotAskPermissions.contains(true)) {
+            result.error(
+                "stripeTerminal#permissionDeclinedPermanenty",
+                "You have declined the necessary permission, please allow from settings to continue.",
+                null
+            )
+            return false
+        }
+
+        ActivityCompat.requestPermissions(currentActivity!!, permissions, REQUEST_CODE_LOCATION)
+        this.result = result
+        return false
+    }
+    
+    fun _startStripe() {
+        try {
+            if (!Terminal.isInitialized()) {
+                Terminal.initTerminal(
+                    currentActivity!!.applicationContext,
+                    logLevel,
+                    tokenProvider,
+                    listener
+                )
+            }
+        } 
+        catch(e: TerminalException){
+            println(e.errorMessage);
+        }
+       
+   }
 
     @OptIn(OnReaderTips::class)
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
         when (call.method) {
             "init" -> {
-                //if (_isPermissionAllowed(result)) {
+                if (_isPermissionAllowed(result)) {
                     _startStripe()
-                //}
+                }
             }
             "clearReaderDisplay" -> {
                 Terminal.getInstance().clearReaderDisplay(object :Callback{
@@ -527,62 +576,6 @@ class StripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
             }
             else -> result.notImplemented()
         }
-
-    }
-
-    var result: Result? = null
-    private fun _isPermissionAllowed(result: Result): Boolean {
-        val permissionStatus = permissions.map {
-            ContextCompat.checkSelfPermission(currentActivity!!, it)
-        }
-
-        if (!permissionStatus.contains(PackageManager.PERMISSION_DENIED)) {
-            result.success(true)
-            return true
-        }
-
-
-        val cannotAskPermissions = permissions.map {
-            ActivityCompat.shouldShowRequestPermissionRationale(currentActivity!!, it)
-        }
-
-        if (cannotAskPermissions.contains(true)) {
-            result.error(
-                "stripeTerminal#permissionDeclinedPermanenty",
-                "You have declined the necessary permission, please allow from settings to continue.",
-                null
-            )
-            return false
-        }
-
-        this.result = result
-
-        ActivityCompat.requestPermissions(currentActivity!!, permissions, REQUEST_CODE_LOCATION)
-
-        return false
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ): Boolean {
-        if (requestCode == REQUEST_CODE_LOCATION && grantResults.length > 0
-                && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    
-            result?.error(
-                "stripeTerminal#insuffecientPermission",
-                "You have not provided enough permission for the scanner to work",
-                null
-            )
-            throw new RuntimeException("Location services are required in order to " +
-                    "connect to a reader.");
-        }
-        else { 
-            _startStripe()
-        }
-        
-        return requestCode == REQUEST_CODE_LOCATION
     }
 
 

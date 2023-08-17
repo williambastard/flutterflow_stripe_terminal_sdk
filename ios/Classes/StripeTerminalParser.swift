@@ -6,9 +6,9 @@
 //
 
 import Foundation
-import StripeTerminalx
+import StripeTerminal
 
-class StripeTerminalxParser {
+class StripeTerminalParser {
     
     static func getScanMethod(discoveryMethod: String) -> DiscoveryMethod? {
         switch(discoveryMethod){
