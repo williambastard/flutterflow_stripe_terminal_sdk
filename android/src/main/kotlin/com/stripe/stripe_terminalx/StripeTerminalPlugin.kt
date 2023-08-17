@@ -109,14 +109,7 @@ class StripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
         val cannotAskPermissions = permissions.map {
             ActivityCompat.shouldShowRequestPermissionRationale(currentActivity!!, it)
         }
-
-
-        if (!permissionStatus.contains(PackageManager.PERMISSION_DENIED)) {
-            result.success(true)
-            return true
-        }
-
-
+        
         if (cannotAskPermissions.contains(true)) {
             result.error(
                 "stripeTerminal#permissionDeclinedPermanenty",
@@ -125,10 +118,21 @@ class StripeTerminalPlugin : FlutterPlugin, MethodCallHandler,
             )
             return false
         }
-
-        ActivityCompat.requestPermissions(currentActivity!!, permissions, REQUEST_CODE_LOCATION)
+        
+        if (permissionStatus.contains(PackageManager.PERMISSION_DENIED)) {
+            ActivityCompat.requestPermissions(currentActivity!!, permissions, REQUEST_CODE_LOCATION)
+            result.error(
+                "stripeTerminal#insuffecientPermission",
+                "Le bluetooth et la localisation sont indispensables pour utiliser le TPE.",
+                null
+            )
+            this.result = result
+            return false
+        }
+        
+        result.success(true)
         this.result = result
-        return false
+        return true
     }
     
     fun _startStripe() {
