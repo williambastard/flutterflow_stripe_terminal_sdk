@@ -143,10 +143,3 @@ And you are done!!!!
 Please feel free to send a PR for further feature as you need or just create an issue on the repo with the feature request. 
 
 I have no plans to maintain this package in the long future thus the package will be deprecated as soon as [flutter_stripe](https://pub.dev/packages/flutter_stripe) adds support to their SDK as mentioned [here](https://github.com/flutter-stripe/flutter_stripe/issues/39#issuecomment-1084191165) 
-
-# Support the creator
-Creating software for free takes time and effort thus please consider buying me a cup of coffee. This we definitely put a smile on my face and motivate me to contribute more.
-
-[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/aawaz)
-
-[:heart: Sponsor](https://github.com/sponsors/awazgyawali)
